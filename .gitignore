@@ -1,0 +1,6 @@
+/node_modules/
+/logs/error.log
+/logs/server.log
+/src/uploads/*
+package-lock.json
+.env
