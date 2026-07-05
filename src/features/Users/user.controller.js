@@ -3,17 +3,67 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 import {
-	getAllUsers,
+	getUsers,
 	findUserByEmail,
-	userRegister,
-} from "../models/user.model.js";
-import { UnauthorizedError, ValidationError } from "../../utils/errors.js";
+	signup,
+	resetPassword,
+	updateUser,
+} from "./user.repository.js";
+import {
+	NotFoundError,
+	UnauthorizedError,
+	ValidationError,
+} from "../../utils/errors.js";
+import { verificationEmail } from "../../utils/emailTemplates.js";
+import sendEmail from "../../service/email.service.js";
+
+export const getUserDetails = async (req, res, next) => {
+	try {
+		const userId = req.params.userId;
+		const loggedInUser = await getUsers(req.userId);
+		const user = await getUsers(userId);
+		console.log(loggedInUser, user);
+
+		if (!user) {
+			throw new NotFoundError("User not found");
+		}
+		if (!loggedInUser.isAdmin && userId !== req.userId) {
+			throw new UnauthorizedError();
+		}
+
+		return res.status(200).json({
+			success: true,
+			data: user,
+		});
+	} catch (error) {
+		console.log(error);
+		next(error);
+	}
+};
+export const getAllUserDetails = async (req, res, next) => {
+	try {
+		const loggedInUser = await getUsers(req.userId);
+		const users = await getUsers();
+
+		if (!loggedInUser.isAdmin) {
+			throw new UnauthorizedError();
+		}
+
+		return res.status(200).json({
+			success: true,
+			data: users,
+		});
+	} catch (error) {
+		console.log(error);
+		next(error);
+	}
+};
 
 export const userSignup = async (req, res, next) => {
 	try {
-		const { name, email, password } = req.body;
+		const { name, email, password, gender } = req.body;
 
-		const existingUser = findUserByEmail(email);
+		const existingUser = await findUserByEmail(email);
 
 		if (existingUser) {
 			throw new ValidationError(
@@ -22,18 +72,23 @@ export const userSignup = async (req, res, next) => {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 12);
-		const newUser = userRegister({
+		const newUser = await signup({
 			name,
 			email,
 			password: hashedPassword,
+			gender,
 		});
 
-		// Never send the password hash back, even to the user who just registered.
-		const { password: _omit, ...safeUser } = newUser;
+		const sentMail = await sendEmail(
+			newUser.name,
+			newUser.email,
+			"http://localhost:3000/",
+		);
 
 		return res.status(201).json({
 			success: true,
-			data: safeUser,
+			message: `Verification email sent to registered user id ${sentMail.accepted}, please verify.`,
+			data: newUser,
 		});
 	} catch (error) {
 		console.log(error);
@@ -44,11 +99,22 @@ export const userSignup = async (req, res, next) => {
 export const userSignin = async (req, res, next) => {
 	try {
 		const { email, password } = req.body;
-		const user = findUserByEmail(email);
+		const user = await findUserByEmail(email);
 
 		if (!user) {
 			throw new UnauthorizedError("Invalid email or password");
 		}
+
+		// if (!user.isVerified) {
+		// 	const sentMail = await sendEmail(
+		// 		newUser.name,
+		// 		newUser.email,
+		// 		"http://localhost:3000/",
+		// 	);
+		// 	throw new ValidationError(
+		// 		"Please verify your registered email first, verification mail sent.",
+		// 	);
+		// }
 
 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -73,11 +139,32 @@ export const userSignin = async (req, res, next) => {
 	}
 };
 
-export const getUsers = (req, res) => {
-	// Strip password hashes before sending the list back.
-	const safeUsers = getAllUsers().map(({ password, ...rest }) => rest);
-	return res.status(200).json({
+export const userLogout = async (req, res, next) => {
+	return res.clearCookie("jwtToken").json({
 		success: true,
-		data: safeUsers,
+		msg: "logout successful",
 	});
+};
+
+export const userLogoutAllDevices = async (req, res, next) => {};
+
+export const updateUserDetails = async (req, res, next) => {
+	try {
+		const userId = req.params.userId;
+		if (userId !== req.userId) {
+			throw new UnauthorizedError();
+		}
+		const { avatar, name, gender } = req.body;
+
+		const updatedUser = await updateUser(userId, avatar, name, gender);
+
+		return res.status(200).json({
+			success: true,
+			message: "User data updated!",
+			data: updatedUser,
+		});
+	} catch (error) {
+		console.log(error);
+		next(error);
+	}
 };

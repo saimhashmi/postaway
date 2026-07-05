@@ -1,18 +1,24 @@
 import express from "express";
 import {
-	getUsers,
+	getUserDetails,
+	getAllUserDetails,
 	userSignup,
 	userSignin,
-} from "../controllers/user.controller.js";
+	userLogout,
+	updateUserDetails,
+} from "./user.controller.js";
 import jwtAuth from "../../middlewares/jwtAuth.middleware.js";
-import { validateNewUser } from "../../middlewares/validation.middleware.js";
 
 // Initialize Express router
 const router = express.Router();
 
 // All the paths to controller methods.
-router.get("/", jwtAuth, getUsers);
-router.post("/signup", validateNewUser, userSignup);
+router.get("/get-details/:userId", jwtAuth, getUserDetails);
+router.get("/get-all-details", jwtAuth, getAllUserDetails);
+router.post("/signup", userSignup);
 router.post("/signin", userSignin);
+router.post("/logout", jwtAuth, userLogout);
+// router.post("/logout-all-devices", jwtAuth, userLogoutAllDevices);
+router.put("/update-details/:userId", jwtAuth, updateUserDetails);
 
 export default router;

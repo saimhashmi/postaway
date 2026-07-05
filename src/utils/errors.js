@@ -34,11 +34,11 @@ export class UnauthorizedError extends AppError {
 	}
 }
 
-// export class DatabaseError extends AppError {
-// 	constructor(message = "Database operation failed") {
-// 		super(message, 500);
-// 	}
-// }
+export class DatabaseError extends AppError {
+	constructor(message = "Database operation failed") {
+		super(message, 500);
+	}
+}
 
 export class ServerError extends AppError {
 	constructor(
@@ -47,5 +47,19 @@ export class ServerError extends AppError {
 	) {
 		super(message, 500);
 		this.error = error;
+	}
+}
+
+export class EmailDeliveryError extends AppError {
+	constructor(
+		message = "Failed to send transactional alert",
+		recipient = null,
+		error = null,
+	) {
+		// 502 Bad Gateway represents a failure in an upstream provider (Gmail, Resend, etc.)
+		super(message, 502);
+
+		this.recipient = recipient; // Email tracking context
+		this.error = error; // Original error payload from Nodemailer / Vendor API
 	}
 }

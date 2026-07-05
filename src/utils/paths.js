@@ -14,5 +14,6 @@ export const PATHS = {
 	logsDir: path.join(ROOT_DIR, "logs"),
 	errorLog: path.join(ROOT_DIR, "logs", "error.log"),
 	serverLog: path.join(ROOT_DIR, "logs", "server.log"),
+	publicDir: path.join(ROOT_DIR, "src", "public"),
 	uploadsDir: path.join(ROOT_DIR, "src", "public", "uploads"),
 };

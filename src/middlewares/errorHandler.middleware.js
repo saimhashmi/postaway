@@ -15,6 +15,8 @@ export const errorHandler = (err, req, res, next) => {
 		message: err.message,
 		...(err.originalError && { originalError: err.originalError }), // e.g. "jwt expired", "invalid signature"
 		...(err.errors && { errors: err.errors }), // e.g. validation field errors
+		...(err.error && { error: err.error }), // e.g. error payload from Nodemailer / Vendor API
+		...(err.recipient && { recipient: err.recipient }), // e.g. Email tracking context
 		stack: err.stack,
 		statusCode,
 		isOperational,
