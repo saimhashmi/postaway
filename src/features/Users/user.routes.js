@@ -6,6 +6,7 @@ import {
 	userSignin,
 	userLogout,
 	updateUserDetails,
+	userLogoutAllDevices,
 } from "./user.controller.js";
 import jwtAuth from "../../middlewares/jwtAuth.middleware.js";
 
@@ -18,7 +19,7 @@ router.get("/get-all-details", jwtAuth, getAllUserDetails);
 router.post("/signup", userSignup);
 router.post("/signin", userSignin);
 router.post("/logout", jwtAuth, userLogout);
-// router.post("/logout-all-devices", jwtAuth, userLogoutAllDevices);
+router.post("/logout-all-devices", jwtAuth, userLogoutAllDevices);
 router.put("/update-details/:userId", jwtAuth, updateUserDetails);
 
 export default router;

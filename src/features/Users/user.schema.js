@@ -1,13 +1,11 @@
 import mongoose from "mongoose";
 
-// Define User Schema
 const userSchema = new mongoose.Schema({
 	avatar: {
 		type: String,
 		trim: true,
 		validate: {
 			validator: function (value) {
-				// Regex allows valid http/https URLs OR relative paths starting with /
 				const urlOrRelativePathRegex = /^(https?:\/\/|\/)[^\s]+$/;
 				return urlOrRelativePathRegex.test(value);
 			},
@@ -42,20 +40,14 @@ const userSchema = new mongoose.Schema({
 	},
 	isAdmin: {
 		type: Boolean,
-		default: false, // Admin flag can only be turned on by manually editing document in mongoDB
+		default: false,
 	},
 	isVerified: {
 		type: Boolean,
 		default: false,
 	},
-	loginTokens: [
-		{
-			type: String,
-		},
-	],
 });
 
-// Create a User model from the schema
 const User = mongoose.model("User", userSchema);
 
 export default User;

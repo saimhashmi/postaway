@@ -1,6 +1,7 @@
+// user.repository.js
 import mongoose from "mongoose";
 import User from "./user.schema.js";
-import { DatabaseError } from "../../utils/errors.js";
+import { DatabaseError, ServerError } from "../../utils/errors.js";
 
 export const getUsers = async (userId = null) => {
 	try {

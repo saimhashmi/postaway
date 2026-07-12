@@ -1,3 +1,4 @@
+// user.controller.js
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -16,6 +17,11 @@ import {
 } from "../../utils/errors.js";
 import { verificationEmail } from "../../utils/emailTemplates.js";
 import sendEmail from "../../service/email.service.js";
+import {
+	createLoginToken,
+	deleteAllLoginTokens,
+	deleteLoginToken,
+} from "./loginToken.repository.js";
 
 export const getUserDetails = async (req, res, next) => {
 	try {
@@ -123,11 +129,16 @@ export const userSignin = async (req, res, next) => {
 		}
 
 		const secretKey = process.env.JWT_SECRET;
-		const payload = { userId: user.id, email: user.email };
-		const validity = { expiresIn: "1h" };
+		const payload = {
+			userId: user._id,
+			email: user.email,
+			isAdmin: user.isAdmin,
+		};
+		const validity = { expiresIn: `${process.env.JWT_EXPIRY}h` };
 		const token = jwt.sign(payload, secretKey, validity);
 
 		res.cookie("jwtToken", token, { httpOnly: true });
+		await createLoginToken(user._id, token);
 
 		return res.status(200).json({
 			success: true,
@@ -140,13 +151,38 @@ export const userSignin = async (req, res, next) => {
 };
 
 export const userLogout = async (req, res, next) => {
-	return res.clearCookie("jwtToken").json({
-		success: true,
-		msg: "logout successful",
-	});
+	try {
+		const authHeader = req.headers["authorization"];
+		const bearerToken = authHeader?.startsWith("Bearer ")
+			? authHeader.slice(7)
+			: authHeader;
+		const token = req.cookies?.jwtToken || bearerToken;
+
+		await deleteLoginToken(req.userId, token);
+
+		return res.clearCookie("jwtToken").json({
+			success: true,
+			msg: "logout successful",
+		});
+	} catch (error) {
+		console.log(error);
+		next(error);
+	}
 };
 
-export const userLogoutAllDevices = async (req, res, next) => {};
+export const userLogoutAllDevices = async (req, res, next) => {
+	try {
+		await deleteAllLoginTokens(req.userId);
+
+		return res.clearCookie("jwtToken").json({
+			success: true,
+			msg: "logout from all devices successful",
+		});
+	} catch (error) {
+		console.log(error);
+		next(error);
+	}
+};
 
 export const updateUserDetails = async (req, res, next) => {
 	try {
