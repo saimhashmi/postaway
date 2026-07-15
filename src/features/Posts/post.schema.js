@@ -15,6 +15,16 @@ const PostSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	timeStamp: {
+		type: Date,
+		default: Date.now,
+	},
+	comments: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Comment",
+		},
+	],
 });
 
 const Post = mongoose.model("Post", PostSchema);

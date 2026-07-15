@@ -6,10 +6,38 @@ import User from "../Users/user.schema.js";
 export const getPosts = async (postId = null) => {
 	try {
 		if (postId) {
-			return await Post.findById(postId);
+			return await Post.findById(postId)
+				.populate({
+					path: "userId",
+					model: "User",
+					select: "avatar name",
+				})
+				.populate({
+					path: "comments",
+					select: "userId content",
+					populate: {
+						path: "userId",
+						model: "User",
+						select: "avatar name",
+					},
+				});
 		}
 
-		return await Post.find();
+		return await Post.find()
+			.populate({
+				path: "userId",
+				model: "User",
+				select: "avatar name",
+			})
+			.populate({
+				path: "comments",
+				select: "userId content",
+				populate: {
+					path: "userId",
+					model: "User",
+					select: "avatar name",
+				},
+			});
 	} catch (error) {
 		throw new ServerError({ error });
 	}
@@ -17,7 +45,14 @@ export const getPosts = async (postId = null) => {
 
 export const getPostByUserId = async (userId) => {
 	try {
-		return await Post.find({ userId: userId });
+		return await Post.find({ userId: userId }).populate({
+			path: "comments",
+			populate: {
+				path: "userId",
+				model: "User",
+				select: "name",
+			},
+		});
 	} catch (error) {
 		throw new ServerError({ error: error });
 	}
@@ -71,7 +106,14 @@ export const updatePost = async (updatePost) => {
 
 		await post.save();
 
-		return post;
+		return post.populate({
+			path: "comments",
+			populate: {
+				path: "userId",
+				model: "User",
+				select: "name",
+			},
+		});
 	} catch (error) {
 		// Intercepting Mongoose CastError specifically
 		if (

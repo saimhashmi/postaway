@@ -5,7 +5,9 @@ import { ServerError } from "../../utils/errors.js";
 export const getUsers = async (userId = null) => {
 	try {
 		if (userId) {
-			return await User.findById(userId);
+			return await User.findById(userId)
+				.populate("posts")
+				.populate("comments");
 		}
 
 		return await User.find();

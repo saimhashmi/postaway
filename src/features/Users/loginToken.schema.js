@@ -19,10 +19,7 @@ const loginTokenSchema = new mongoose.Schema({
 
 // TTL index: MongoDB's background task deletes the doc
 // once `createdAt` is older than 3600s (1hr) — matches your JWT expiry
-loginTokenSchema.index(
-	{ createdAt: 1 },
-	{ expireAfterSeconds: Number(process.env.JWT_EXPIRY) * 60 * 60 },
-);
+loginTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 
 const LoginToken = mongoose.model("LoginToken", loginTokenSchema);
 

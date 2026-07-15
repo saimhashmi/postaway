@@ -1,18 +1,20 @@
 import {
 	deleteComment,
 	getComments,
-	postCommet,
+	postComments,
 	updateComment,
-} from "../models/comment.model.js";
+} from "./comment.repository.js";
 import { NotFoundError } from "../../utils/errors.js";
 
-export const getAllCommentsForPost = (req, res, next) => {
+export const getCommentforPost = async (req, res, next) => {
 	try {
-		const postId = req.params.id;
-		const comments = getComments(postId);
-		if (comments.length == 0) {
+		const postId = req.params.postId;
+		const comments = await getComments(postId);
+
+		if (!comments) {
 			throw new NotFoundError("No comments available");
 		}
+
 		return res.status(200).json({
 			success: true,
 			data: comments,
@@ -22,13 +24,13 @@ export const getAllCommentsForPost = (req, res, next) => {
 	}
 };
 
-export const createNewComments = (req, res, next) => {
+export const createNewComments = async (req, res, next) => {
 	try {
 		const userId = req.userId;
-		const postId = parseInt(req.params.id);
+		const postId = req.params.postId;
 		const content = req.body.content;
 
-		const newComment = postCommet(userId, postId, content);
+		const newComment = await postComments({ userId, postId, content });
 
 		return res.status(201).json({
 			success: true,
@@ -39,41 +41,45 @@ export const createNewComments = (req, res, next) => {
 	}
 };
 
-export const deleteUserComment = (req, res, next) => {
+export const deleteUserComment = async (req, res, next) => {
 	try {
-		const commentId = req.params.id;
+		const commentId = req.params.commentId;
 		const userId = req.userId;
-		const deletedComment = deleteComment(commentId, userId);
 
-		if (deletedComment) {
-			return res.status(200).json({
-				success: true,
-				data: deletedComment,
-			});
-		} else {
-			throw new NotFoundError(`Comment with id: ${commentId}, not found`);
+		const deletedComment = await deleteComment(userId, commentId);
+
+		if (!deletedComment) {
+			console.log(deletedComment);
+			throw new NotFoundError(`Comment not found`);
 		}
+		return res.status(200).json({
+			success: true,
+			data: deletedComment,
+		});
 	} catch (error) {
 		next(error);
 	}
 };
 
-export const updateUserComment = (req, res, next) => {
+export const updateUserComment = async (req, res, next) => {
 	try {
-		const commentId = req.params.id;
+		const commentId = req.params.commentId;
 		const userId = req.userId;
-		const { content } = req.body;
+		const content = req.body.content;
 
-		const updatedComment = updateComment({ commentId, userId, content });
+		const updatedComment = await updateComment({
+			commentId,
+			userId,
+			content,
+		});
 
-		if (updatedComment) {
-			return res.status(200).json({
-				success: true,
-				data: updatedComment,
-			});
-		} else {
-			throw new NotFoundError(`Comment with id: ${commentId}, not found`);
+		if (!updatedComment) {
+			throw new NotFoundError(`Comment not found`);
 		}
+		return res.status(200).json({
+			success: true,
+			data: updatedComment,
+		});
 	} catch (error) {
 		next(error);
 	}

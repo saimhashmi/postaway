@@ -1,19 +1,19 @@
 import express from "express";
+import { validateNewComment } from "../../middlewares/validation.middleware.js";
 import {
 	createNewComments,
 	deleteUserComment,
-	getAllCommentsForPost,
+	getCommentforPost,
 	updateUserComment,
-} from "../controllers/comment.controller.js";
-import { validateNewComment } from "../../middlewares/validation.middleware.js";
+} from "./comment.controller.js";
 
 // Initialize Express router
 const router = express.Router();
 
 // All the paths to controller methods.
-router.get("/:id", getAllCommentsForPost);
-router.post("/:id", validateNewComment, createNewComments);
-router.delete("/:id", deleteUserComment);
-router.put("/:id", updateUserComment);
+router.get("/:postId", getCommentforPost);
+router.post("/:postId", validateNewComment, createNewComments);
+router.delete("/:commentId", deleteUserComment);
+router.put("/:commentId", updateUserComment);
 
 export default router;
