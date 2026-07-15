@@ -22,7 +22,7 @@ import {
 
 // Import routes
 import userRouter from "./src/features/Users/user.routes.js";
-// import postRouter from "./src/features/Posts/post.routes.js";
+import postRouter from "./src/features/Posts/post.routes.js";
 // import commentRouter from "./src/features/Comments/comment.routes.js";
 // import likeRouter from "./src/features/Likes/like.routes.js";
 // import friendRouter from "./src/features/Friends/friend.routes.js";
@@ -47,7 +47,7 @@ server.use(logger);
 
 // API routes
 server.use("/api/users", userRouter);
-// server.use("/api/posts", jwtAuth, postRouter);
+server.use("/api/posts", jwtAuth, postRouter);
 // server.use("/api/comments", jwtAuth, commentRouter);
 // server.use("/api/likes", jwtAuth, likeRouter);
 // server.use("/api/friends", jwtAuth, friendRouter);

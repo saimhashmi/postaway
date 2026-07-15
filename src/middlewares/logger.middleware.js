@@ -6,6 +6,7 @@ export const errorLogger = winston.createLogger({
 	level: "error",
 	format: winston.format.combine(
 		winston.format.timestamp(),
+		winston.format.errors({ stack: true }),
 		winston.format.json(),
 	),
 	defaultMeta: { service: "user-service" },

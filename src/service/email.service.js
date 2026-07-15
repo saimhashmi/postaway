@@ -36,7 +36,6 @@ export default async function sendEmail(
 		console.log("Email sent successfully");
 		return info;
 	} catch (error) {
-		console.log(error);
 		throw new EmailDeliveryError(
 			`Alert transmission failed for recipient: ${toEmail}`,
 			toEmail,

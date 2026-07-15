@@ -1,15 +1,15 @@
 import {
-	createPosts,
-	getPosts,
-	getPostsByuserId,
-	updatePost,
+	createPost,
 	deletePost,
-} from "../models/post.model.js";
+	getPostByUserId,
+	getPosts,
+	updatePost,
+} from "./post.repository.js";
 import { NotFoundError, ServerError } from "../../utils/errors.js";
 
-export const getAllPosts = (req, res, next) => {
+export const getAllPosts = async (req, res, next) => {
 	try {
-		const posts = getPosts();
+		const posts = await getPosts();
 		if (posts.length == 0) {
 			throw new NotFoundError("No posts available");
 		}
@@ -18,17 +18,16 @@ export const getAllPosts = (req, res, next) => {
 			data: posts,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
 
-export const getOnePost = (req, res, next) => {
+export const getOnePost = async (req, res, next) => {
 	try {
-		const postId = req.params.id;
-		const post = getPosts(postId);
+		const postId = req.params.postId;
+		const post = await getPosts(postId);
 		if (!post) {
-			throw new NotFoundError(`Post with id: ${postId}, not found`);
+			throw new NotFoundError("Post not found");
 		}
 
 		return res.status(200).json({
@@ -36,15 +35,14 @@ export const getOnePost = (req, res, next) => {
 			data: post,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
 
-export const getPostsByUser = (req, res, next) => {
+export const getPostsByUser = async (req, res, next) => {
 	try {
-		const userId = req.userId;
-		const posts = getPostsByuserId(userId);
+		const userId = req.params.userId;
+		const posts = await getPostByUserId(userId);
 
 		if (!posts) {
 			throw new NotFoundError("No posts available");
@@ -55,12 +53,11 @@ export const getPostsByUser = (req, res, next) => {
 			data: posts,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
 
-export const createNewPost = (req, res, next) => {
+export const createNewPost = async (req, res, next) => {
 	try {
 		const userId = req.userId;
 		const { caption } = req.body;
@@ -68,59 +65,61 @@ export const createNewPost = (req, res, next) => {
 			? `./uploads/${req.file.filename}`
 			: req.body.imageUrl;
 
-		const newPost = createPosts(userId, caption, imageUrl);
+		const newPost = await createPost({ userId, caption, imageUrl });
 
 		return res.status(201).json({
 			success: true,
 			data: newPost,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
 
-export const deleteUserPost = (req, res, next) => {
+export const deleteUserPost = async (req, res, next) => {
 	try {
-		const postId = req.params.id;
+		const postId = req.params.postId;
 		const userId = req.userId;
-		const deletedPost = deletePost(postId, userId);
+		const deletedPost = await deletePost(postId, userId);
 
-		if (deletedPost) {
-			return res.status(200).json({
-				success: true,
-				data: deletedPost,
-			});
-		} else {
-			throw new NotFoundError(`Post with id: ${postId}, not found`);
+		if (!deletedPost) {
+			throw new NotFoundError(`Post not found`);
 		}
+
+		return res.status(200).json({
+			success: true,
+			data: deletedPost,
+		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
 
-export const updateUserPost = (req, res, next) => {
+export const updateUserPost = async (req, res, next) => {
 	try {
-		const id = req.params.id;
+		const postId = req.params.postId;
 		const userId = req.userId;
 		const caption = req.body?.caption ?? null;
 		const imageUrl = req.file
 			? `./uploads/${req.file.filename}`
 			: req.body.imageUrl;
 
-		const updatedPost = updatePost({ id, userId, caption, imageUrl });
+		const updatedPost = await updatePost({
+			postId,
+			userId,
+			caption,
+			imageUrl,
+		});
 
-		if (updatedPost) {
-			return res.status(201).json({
-				success: true,
-				data: updatedPost,
-			});
-		} else {
-			throw new NotFoundError(`Post with id: ${id}, not found`);
+		if (!updatedPost) {
+			throw new NotFoundError(`Post not found`);
 		}
+
+		return res.status(200).json({
+			success: true,
+			data: updatedPost,
+		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };

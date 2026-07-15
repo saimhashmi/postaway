@@ -13,7 +13,6 @@ export const getLikesForPosts = (req, res, next) => {
 			data: likes,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -30,7 +29,6 @@ export const toggleLikeForPost = (req, res, next) => {
 			data: newLike,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };

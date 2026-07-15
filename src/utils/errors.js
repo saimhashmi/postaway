@@ -28,34 +28,35 @@ export class ValidationError extends AppError {
 	}
 }
 
+export class ClientError extends AppError {
+	constructor(message = "Invalid user input", error = null) {
+		super(message, 400);
+		this.error = error;
+	}
+}
+
 export class UnauthorizedError extends AppError {
 	constructor(message = "Not authorized") {
 		super(message, 401);
 	}
 }
 
-export class DatabaseError extends AppError {
-	constructor(message = "Database operation failed") {
-		super(message, 500);
-	}
-}
-
 export class ServerError extends AppError {
-	constructor(
+	constructor({
 		message = "Something went wrong, please try again later!",
 		error = null,
-	) {
+	}) {
 		super(message, 500);
 		this.error = error;
 	}
 }
 
 export class EmailDeliveryError extends AppError {
-	constructor(
+	constructor({
 		message = "Failed to send transactional alert",
 		recipient = null,
 		error = null,
-	) {
+	}) {
 		// 502 Bad Gateway represents a failure in an upstream provider (Gmail, Resend, etc.)
 		super(message, 502);
 

@@ -18,7 +18,6 @@ export const getAllCommentsForPost = (req, res, next) => {
 			data: comments,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -36,7 +35,6 @@ export const createNewComments = (req, res, next) => {
 			data: newComment,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -56,7 +54,6 @@ export const deleteUserComment = (req, res, next) => {
 			throw new NotFoundError(`Comment with id: ${commentId}, not found`);
 		}
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -78,7 +75,6 @@ export const updateUserComment = (req, res, next) => {
 			throw new NotFoundError(`Comment with id: ${commentId}, not found`);
 		}
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };

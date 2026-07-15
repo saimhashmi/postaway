@@ -1,7 +1,6 @@
 // user.repository.js
-import mongoose from "mongoose";
 import User from "./user.schema.js";
-import { DatabaseError, ServerError } from "../../utils/errors.js";
+import { ServerError } from "../../utils/errors.js";
 
 export const getUsers = async (userId = null) => {
 	try {
@@ -11,7 +10,7 @@ export const getUsers = async (userId = null) => {
 
 		return await User.find();
 	} catch (error) {
-		throw new DatabaseError(error.message);
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -19,7 +18,7 @@ export const findUserByEmail = async (email) => {
 	try {
 		return await User.findOne({ email: email }).select("+password");
 	} catch (error) {
-		throw new DatabaseError(error.message);
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -30,7 +29,7 @@ export const signup = async (user) => {
 
 		return await User.findById(newUser._id);
 	} catch (error) {
-		throw new DatabaseError(error.message);
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -47,24 +46,6 @@ export const updateUser = async (userId, avatar, name, gender) => {
 			{ returnDocument: "after", runValidators: true },
 		);
 	} catch (error) {
-		throw new DatabaseError(error.message);
-	}
-};
-
-export const resetPassword = async (userID, newPassword) => {
-	try {
-		let user = await UserModel.findById(userID);
-
-		if (user) {
-			user.password = newPassword;
-			await user.save();
-
-			return user;
-		} else {
-			return false;
-		}
-	} catch (error) {
-		console.log(error);
-		throw new customError("Something went wrong", 500);
+		throw new ServerError({ error: error });
 	}
 };

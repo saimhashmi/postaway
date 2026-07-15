@@ -4,13 +4,7 @@ import LoginToken from "./loginToken.schema.js";
 import { ServerError } from "../../utils/errors.js";
 
 const hashToken = (jwtToken) => {
-	try {
-		return crypto.createHash("sha256").update(jwtToken).digest("hex");
-	} catch (error) {
-		const serverError = new ServerError();
-		serverError.originalError = error.message;
-		throw serverError;
-	}
+	return crypto.createHash("sha256").update(jwtToken).digest("hex");
 };
 
 export const isTokenValid = async (userId, jwtToken) => {
@@ -19,9 +13,7 @@ export const isTokenValid = async (userId, jwtToken) => {
 		const found = await LoginToken.exists({ userId, token: hashedToken });
 		return Boolean(found);
 	} catch (error) {
-		const serverError = new ServerError();
-		serverError.originalError = error.message;
-		throw serverError;
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -30,9 +22,7 @@ export const createLoginToken = async (userId, jwtToken) => {
 		const hashedToken = hashToken(jwtToken);
 		return LoginToken.create({ userId, token: hashedToken });
 	} catch (error) {
-		const serverError = new ServerError();
-		serverError.originalError = error.message;
-		throw serverError;
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -41,9 +31,7 @@ export const deleteLoginToken = async (userId, jwtToken) => {
 		const hashedToken = hashToken(jwtToken);
 		return LoginToken.deleteOne({ userId, token: hashedToken });
 	} catch (error) {
-		const serverError = new ServerError();
-		serverError.originalError = error.message;
-		throw serverError;
+		throw new ServerError({ error: error });
 	}
 };
 
@@ -51,8 +39,6 @@ export const deleteAllLoginTokens = async (userId) => {
 	try {
 		return await LoginToken.deleteMany({ userId });
 	} catch (error) {
-		const serverError = new ServerError();
-		serverError.originalError = error.message;
-		throw serverError;
+		throw new ServerError({ error: error });
 	}
 };

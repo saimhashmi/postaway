@@ -7,7 +7,6 @@ import {
 	getUsers,
 	findUserByEmail,
 	signup,
-	resetPassword,
 	updateUser,
 } from "./user.repository.js";
 import {
@@ -42,7 +41,6 @@ export const getUserDetails = async (req, res, next) => {
 			data: user,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -60,7 +58,6 @@ export const getAllUserDetails = async (req, res, next) => {
 			data: users,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -97,7 +94,6 @@ export const userSignup = async (req, res, next) => {
 			data: newUser,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -145,7 +141,6 @@ export const userSignin = async (req, res, next) => {
 			data: { user: user.email, JWT: token },
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -165,7 +160,6 @@ export const userLogout = async (req, res, next) => {
 			msg: "logout successful",
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -179,7 +173,6 @@ export const userLogoutAllDevices = async (req, res, next) => {
 			msg: "logout from all devices successful",
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };
@@ -200,7 +193,6 @@ export const updateUserDetails = async (req, res, next) => {
 			data: updatedUser,
 		});
 	} catch (error) {
-		console.log(error);
 		next(error);
 	}
 };

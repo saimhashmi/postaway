@@ -6,7 +6,7 @@ import {
 	getOnePost,
 	getPostsByUser,
 	updateUserPost,
-} from "../controllers/post.controller.js";
+} from "./post.controller.js";
 import { upload } from "../../middlewares/fileUpload.middlewware.js";
 import { validateNewPost } from "../../middlewares/validation.middleware.js";
 
@@ -15,10 +15,10 @@ const router = express.Router();
 
 // All the paths to controller methods.
 router.get("/all", getAllPosts);
-router.get("/:id", getOnePost);
-router.get("/", getPostsByUser);
+router.get("/:postId", getOnePost);
+router.get("/user/:userId", getPostsByUser);
 router.post("/", upload.single("imageUrl"), validateNewPost, createNewPost);
-router.delete("/:id", deleteUserPost);
-router.put("/:id", upload.single("imageUrl"), updateUserPost);
+router.delete("/:postId", deleteUserPost);
+router.put("/:postId", upload.single("imageUrl"), updateUserPost);
 
 export default router;

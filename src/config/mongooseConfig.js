@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
-import { DatabaseError } from "../utils/errors.js";
+import { ServerError } from "../utils/errors.js";
 dotenv.config();
 
 const url = process.env.MONGODB || "mongodb://0.0.0.0:27017/Postaway";
@@ -22,9 +22,10 @@ export const connectUsingMongoose = async () => {
 		await mongoose.connect(url, options);
 		console.log("Connection established to MongoDB");
 	} catch (error) {
-		const dbError = new DatabaseError("Error connecting to MongoDB", 500);
-		dbError.originalError = error.message;
-		throw dbError;
+		throw new ServerError({
+			message: "Error connecting to MongoDB",
+			error: error,
+		});
 	}
 };
 
@@ -39,11 +40,9 @@ export const closeMongoDBConnection = async () => {
 			);
 		}
 	} catch (error) {
-		const dbError = new DatabaseError(
-			"Error closing MongoDB connection",
-			500,
-		);
-		dbError.originalError = error.message;
-		throw dbError;
+		throw new ServerError({
+			message: "Error closing MongoDB connection",
+			error: error,
+		});
 	}
 };
