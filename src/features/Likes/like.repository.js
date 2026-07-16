@@ -1,6 +1,9 @@
 import Like from "./like.schema.js";
 import { ServerError } from "../../utils/errors.js";
 import { populate } from "dotenv";
+import User from "../Users/user.schema.js";
+import Post from "../Posts/post.schema.js";
+import Comment from "../Comments/comment.schema.js";
 
 export const getLikes = async (itemId, type) => {
 	try {
@@ -59,6 +62,19 @@ export const toggleLike = async (userId, itemId, type) => {
 		});
 		if (existingLike) {
 			await existingLike.deleteOne();
+			await User.findByIdAndUpdate(userId, {
+				$pull: { likes: existingLike._id },
+			});
+			if (type === "Post") {
+				await Post.findByIdAndUpdate(itemId, {
+					$pull: { likes: existingLike._id },
+				});
+			} else {
+				await Comment.findByIdAndUpdate(itemId, {
+					$pull: { likes: existingLike._id },
+				});
+			}
+
 			return existingLike;
 		} else {
 			const newLike = new Like({
@@ -66,6 +82,19 @@ export const toggleLike = async (userId, itemId, type) => {
 				like: itemId,
 				type: type,
 			});
+
+			await User.findByIdAndUpdate(userId, {
+				$push: { likes: newLike._id },
+			});
+			if (type === "Post") {
+				await Post.findByIdAndUpdate(itemId, {
+					$push: { likes: newLike._id },
+				});
+			} else {
+				await Comment.findByIdAndUpdate(itemId, {
+					$push: { likes: newLike._id },
+				});
+			}
 
 			return await newLike.save();
 		}
