@@ -10,7 +10,7 @@ export const getPosts = async (postId = null) => {
 				.populate({
 					path: "userId",
 					model: "User",
-					select: "avatar name",
+					select: "avatar name email",
 				})
 				.populate({
 					path: "comments",
@@ -18,7 +18,7 @@ export const getPosts = async (postId = null) => {
 					populate: {
 						path: "userId",
 						model: "User",
-						select: "avatar name",
+						select: "avatar name email",
 					},
 				});
 		}

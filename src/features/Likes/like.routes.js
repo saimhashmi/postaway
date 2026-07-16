@@ -1,14 +1,11 @@
 import express from "express";
-import {
-	getLikesForPosts,
-	toggleLikeForPost,
-} from "../controllers/like.controller.js";
+import { getLikesById, toggleLikeById } from "./like.controller.js";
 
 // Initialize Express router
 const router = express.Router();
 
 // All the paths to controller methods.
-router.get("/:postId", getLikesForPosts);
-router.get("/toggle/:postId", toggleLikeForPost);
+router.get("/:Id", getLikesById);
+router.post("/toggle/:Id", toggleLikeById);
 
 export default router;

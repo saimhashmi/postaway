@@ -1,11 +1,12 @@
-import { getLikes, toggleLike } from "../models/like.model.js";
+import { getLikes, toggleLike } from "./like.repository.js";
 import { NotFoundError } from "../../utils/errors.js";
 
-export const getLikesForPosts = (req, res, next) => {
+export const getLikesById = async (req, res, next) => {
 	try {
-		const postId = req.params.postId;
-		const likes = getLikes(postId);
-		if (likes.length == 0) {
+		const itemId = req.params.Id;
+		const type = req.query.type;
+		const likes = await getLikes(itemId, type);
+		if (!likes) {
 			throw new NotFoundError("No likes available");
 		}
 		return res.status(200).json({
@@ -17,12 +18,13 @@ export const getLikesForPosts = (req, res, next) => {
 	}
 };
 
-export const toggleLikeForPost = (req, res, next) => {
+export const toggleLikeById = async (req, res, next) => {
 	try {
 		const userId = req.userId;
-		const postId = req.params.postId;
+		const itemId = req.params.Id;
+		const type = req.query.type;
 
-		const newLike = toggleLike(userId, postId);
+		const newLike = await toggleLike(userId, itemId, type);
 
 		return res.status(200).json({
 			success: true,
