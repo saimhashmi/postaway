@@ -48,10 +48,8 @@ export const deleteUserComment = async (req, res, next) => {
 
 		const deletedComment = await deleteComment(userId, commentId);
 
-		if (!deletedComment) {
-			console.log(deletedComment);
-			throw new NotFoundError(`Comment not found`);
-		}
+		if (!deletedComment) throw new NotFoundError(`Comment not found`);
+
 		return res.status(200).json({
 			success: true,
 			data: deletedComment,

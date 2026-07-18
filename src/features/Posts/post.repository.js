@@ -3,14 +3,35 @@ import { ClientError, ServerError } from "../../utils/errors.js";
 import Post from "./post.schema.js";
 import User from "../Users/user.schema.js";
 
-export const getPosts = async (postId = null) => {
+export const getPosts = async (postId = null, populate = true) => {
 	try {
 		if (postId) {
-			return await Post.findById(postId)
+			if (populate) {
+				return await Post.findById(postId)
+					.populate({
+						path: "userId",
+						model: "User",
+						select: "avatar name email",
+					})
+					.populate({
+						path: "comments",
+						select: "userId content",
+						populate: {
+							path: "userId",
+							model: "User",
+							select: "avatar name email",
+						},
+					});
+			} else {
+				return await Post.findById(postId);
+			}
+		}
+		if (populate) {
+			return await Post.find()
 				.populate({
 					path: "userId",
 					model: "User",
-					select: "avatar name email",
+					select: "avatar name",
 				})
 				.populate({
 					path: "comments",
@@ -18,26 +39,12 @@ export const getPosts = async (postId = null) => {
 					populate: {
 						path: "userId",
 						model: "User",
-						select: "avatar name email",
+						select: "avatar name",
 					},
 				});
+		} else {
+			return await Post.find();
 		}
-
-		return await Post.find()
-			.populate({
-				path: "userId",
-				model: "User",
-				select: "avatar name",
-			})
-			.populate({
-				path: "comments",
-				select: "userId content",
-				populate: {
-					path: "userId",
-					model: "User",
-					select: "avatar name",
-				},
-			});
 	} catch (error) {
 		throw new ServerError({ error });
 	}
@@ -54,7 +61,7 @@ export const getPostByUserId = async (userId) => {
 			},
 		});
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -91,7 +98,7 @@ export const deletePost = async (postId, userId) => {
 			throw new ClientError("Invalid ID format", error);
 		}
 
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -123,6 +130,6 @@ export const updatePost = async (updatePost) => {
 			throw new ClientError("Invalid ID format", error);
 		}
 
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };

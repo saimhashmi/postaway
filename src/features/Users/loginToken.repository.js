@@ -13,7 +13,7 @@ export const isTokenValid = async (userId, jwtToken) => {
 		const found = await LoginToken.exists({ userId, token: hashedToken });
 		return Boolean(found);
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -22,7 +22,7 @@ export const createLoginToken = async (userId, jwtToken) => {
 		const hashedToken = hashToken(jwtToken);
 		return LoginToken.create({ userId, token: hashedToken });
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -31,7 +31,7 @@ export const deleteLoginToken = async (userId, jwtToken) => {
 		const hashedToken = hashToken(jwtToken);
 		return LoginToken.deleteOne({ userId, token: hashedToken });
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -39,6 +39,6 @@ export const deleteAllLoginTokens = async (userId) => {
 	try {
 		return await LoginToken.deleteMany({ userId });
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };

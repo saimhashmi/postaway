@@ -7,7 +7,7 @@ const LikeSchema = new mongoose.Schema({
 		required: true,
 		index: true,
 	},
-	like: {
+	likedItem: {
 		type: mongoose.Schema.Types.ObjectId,
 		refPath: "type", // Adding multiple references
 	},

@@ -3,7 +3,6 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { EmailDeliveryError } from "../utils/errors.js";
 import { text } from "express";
-import { verificationEmail } from "../utils/emailTemplates.js";
 dotenv.config();
 
 // SMTP Server Configuration
@@ -18,17 +17,12 @@ const smtpConfig = {
 // Create a single, permanent Gmail transporter
 const transporter = nodemailer.createTransport(smtpConfig);
 
-export default async function sendEmail(
-	username,
-	recipientEmail,
-	verificationUrl,
-) {
-	const mailData = verificationEmail(username, verificationUrl);
+export default async function sendEmail(recipientEmail, mailBody) {
 	const mailOptions = {
 		from: process.env.GMAIL_USER,
 		to: recipientEmail,
-		subject: mailData.subject,
-		html: mailData.html,
+		subject: mailBody.subject,
+		html: mailBody.html,
 	};
 
 	try {
@@ -36,10 +30,10 @@ export default async function sendEmail(
 		console.log("Email sent successfully");
 		return info;
 	} catch (error) {
-		throw new EmailDeliveryError(
-			`Alert transmission failed for recipient: ${toEmail}`,
-			toEmail,
-			error.message, // Pass the underlying reason (e.g., "Invalid login", "Quota exceeded")
-		);
+		throw new EmailDeliveryError({
+			message: `Alert transmission failed for recipient: ${recipientEmail}`,
+			recipient: recipientEmail,
+			error: error.message,
+		});
 	}
 }

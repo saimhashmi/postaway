@@ -12,7 +12,7 @@ export const getUsers = async (userId = null) => {
 
 		return await User.find();
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -20,7 +20,7 @@ export const findUserByEmail = async (email) => {
 	try {
 		return await User.findOne({ email: email }).select("+password");
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };
 
@@ -31,7 +31,21 @@ export const signup = async (user) => {
 
 		return await User.findById(newUser._id);
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
+	}
+};
+
+export const updateVerifiedStatus = async (userId) => {
+	try {
+		return await User.findByIdAndUpdate(
+			userId,
+			{
+				$set: { isVerified: true },
+			},
+			{ returnDocument: "after" },
+		);
+	} catch (error) {
+		throw new ServerError({ error });
 	}
 };
 
@@ -48,6 +62,6 @@ export const updateUser = async (userId, avatar, name, gender) => {
 			{ returnDocument: "after", runValidators: true },
 		);
 	} catch (error) {
-		throw new ServerError({ error: error });
+		throw new ServerError({ error });
 	}
 };

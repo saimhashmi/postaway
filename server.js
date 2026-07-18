@@ -51,7 +51,7 @@ server.use("/api/posts", jwtAuth, postRouter);
 server.use("/api/comments", jwtAuth, commentRouter);
 server.use("/api/likes", jwtAuth, likeRouter);
 // server.use("/api/friends", jwtAuth, friendRouter);
-server.use("/api/otp", jwtAuth, otpRouter);
+server.use("/api/otp", otpRouter);
 
 // Middlware to handle 404 requests
 // Needs to be put in the end or other handler(s) will not work

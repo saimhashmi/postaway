@@ -9,7 +9,7 @@ export const getLikes = async (itemId, type) => {
 	try {
 		if (type === "Post") {
 			return await Like.find({
-				like: itemId,
+				likedItem: itemId,
 				type: type,
 			})
 				.populate({
@@ -18,13 +18,13 @@ export const getLikes = async (itemId, type) => {
 					select: "name email",
 				})
 				.populate({
-					path: "like",
+					path: "likedItem",
 					model: type,
 					select: "caption imageUrl comments timeStamp",
 				});
 		} else {
 			return await Like.find({
-				like: itemId,
+				likedItem: itemId,
 				type: type,
 			})
 				.populate({
@@ -33,7 +33,7 @@ export const getLikes = async (itemId, type) => {
 					select: "name email",
 				})
 				.populate({
-					path: "like",
+					path: "likedItem",
 					model: type,
 					select: "postId content timeStamp",
 					populate: {
@@ -57,7 +57,7 @@ export const toggleLike = async (userId, itemId, type) => {
 	try {
 		const existingLike = await Like.findOne({
 			user: userId,
-			like: itemId,
+			likedItem: itemId,
 			type: type,
 		});
 		if (existingLike) {
@@ -79,7 +79,7 @@ export const toggleLike = async (userId, itemId, type) => {
 		} else {
 			const newLike = new Like({
 				user: userId,
-				like: itemId,
+				likedItem: itemId,
 				type: type,
 			});
 
@@ -99,6 +99,6 @@ export const toggleLike = async (userId, itemId, type) => {
 			return await newLike.save();
 		}
 	} catch (error) {
-		throw new ServerError();
+		throw new ServerError({ error });
 	}
 };

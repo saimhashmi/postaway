@@ -36,7 +36,7 @@ export const postComments = async (comment) => {
 			},
 			{ new: true },
 		);
-		console.log(updatedPost, updatedPost);
+
 		return newComment;
 	} catch (error) {
 		throw new ServerError({ error });
@@ -57,7 +57,7 @@ export const deleteComment = async (userId, commentId) => {
 			_id: commentId,
 			userId: userId,
 		});
-		console.log(deletedComment);
+
 		await User.findByIdAndUpdate(userId, {
 			$pull: { comments: commentId },
 		});

@@ -8,19 +8,37 @@ import {
 	findUserByEmail,
 	signup,
 	updateUser,
+	updateVerifiedStatus,
 } from "./user.repository.js";
 import {
 	NotFoundError,
 	UnauthorizedError,
 	ValidationError,
 } from "../../utils/errors.js";
-import { verificationEmail } from "../../utils/emailTemplates.js";
+import { verificationEmail, welcomeEmail } from "../../utils/emailTemplates.js";
 import sendEmail from "../../service/email.service.js";
 import {
 	createLoginToken,
 	deleteAllLoginTokens,
 	deleteLoginToken,
 } from "./loginToken.repository.js";
+import { verifyJWT } from "../../middlewares/jwtAuth.middleware.js";
+
+const sendVerificationToken = async (newUser) => {
+	// Generate Verification JWT (Expires in 5 minutes)
+	const verificationToken = jwt.sign(
+		{ userId: newUser._id, email: newUser.email },
+		process.env.JWT_SECRET,
+		{ expiresIn: "5m" },
+	);
+	const verificationUrl = `http://localhost:3000/api/users/verify-email?token=${verificationToken}`;
+	const sentMail = await sendEmail(
+		newUser.email,
+		verificationEmail(newUser.name, verificationUrl),
+	);
+
+	return sentMail;
+};
 
 export const getUserDetails = async (req, res, next) => {
 	try {
@@ -82,16 +100,33 @@ export const userSignup = async (req, res, next) => {
 			gender,
 		});
 
-		const sentMail = await sendEmail(
-			newUser.name,
-			newUser.email,
-			"http://localhost:3000/",
-		);
+		// Send verification email
+		const sentMail = sendVerificationToken(newUser);
 
 		return res.status(201).json({
 			success: true,
-			message: `Verification email sent to registered user id ${sentMail.accepted}, please verify.`,
+			message:
+				"Registration successful, verification mail sent, Welcome to Postaway",
 			data: newUser,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const verifyEmail = async (req, res, next) => {
+	try {
+		const token = req.query.token;
+		if (!token) {
+			throw new ValidationError("Verification token is missing");
+		}
+		const payload = verifyJWT(token);
+		const user = await updateVerifiedStatus(payload.userId);
+		const sentMail = await sendEmail(user.email, welcomeEmail(user.name));
+
+		return res.status(200).json({
+			success: true,
+			msg: "Email verification successful",
 		});
 	} catch (error) {
 		next(error);
@@ -107,16 +142,14 @@ export const userSignin = async (req, res, next) => {
 			throw new UnauthorizedError("Invalid email or password");
 		}
 
-		// if (!user.isVerified) {
-		// 	const sentMail = await sendEmail(
-		// 		newUser.name,
-		// 		newUser.email,
-		// 		"http://localhost:3000/",
-		// 	);
-		// 	throw new ValidationError(
-		// 		"Please verify your registered email first, verification mail sent.",
-		// 	);
-		// }
+		if (!user.isVerified) {
+			// Send verification email
+			sendVerificationToken(user);
+
+			throw new ValidationError(
+				"Please verify your registered email first, Verification mail sent to registered email.",
+			);
+		}
 
 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
 

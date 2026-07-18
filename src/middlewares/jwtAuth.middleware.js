@@ -5,6 +5,17 @@ import { isTokenValid } from "../features/Users/loginToken.repository.js";
 
 dotenv.config();
 
+export const verifyJWT = (token) => {
+	try {
+		const secretKey = process.env.JWT_SECRET;
+		const payload = jwt.verify(token, secretKey);
+
+		return payload;
+	} catch (error) {
+		throw new UnauthorizedError("Unauthorized: invalid or expired token");
+	}
+};
+
 const jwtAuth = async (req, res, next) => {
 	const authHeader = req.headers["authorization"];
 	const bearerToken = authHeader?.startsWith("Bearer ")
@@ -29,6 +40,7 @@ const jwtAuth = async (req, res, next) => {
 		}
 
 		req.userId = payload.userId;
+		req.email = payload.email;
 	} catch (error) {
 		const authError = new UnauthorizedError(
 			"Unauthorized: invalid or expired token",

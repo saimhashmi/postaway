@@ -5,7 +5,12 @@ import {
 	getPosts,
 	updatePost,
 } from "./post.repository.js";
-import { NotFoundError, ServerError } from "../../utils/errors.js";
+import {
+	NotFoundError,
+	ServerError,
+	UnauthorizedError,
+} from "../../utils/errors.js";
+import { ObjectId } from "mongodb";
 
 export const getAllPosts = async (req, res, next) => {
 	try {
@@ -80,10 +85,19 @@ export const deleteUserPost = async (req, res, next) => {
 	try {
 		const postId = req.params.postId;
 		const userId = req.userId;
+		const post = await getPosts(postId, false);
+		if (!post) {
+			throw new NotFoundError(`Post with id ${postId} doesn't exits`);
+		}
+
+		if (post.userId.toString() !== userId) {
+			throw new UnauthorizedError();
+		}
+
 		const deletedPost = await deletePost(postId, userId);
 
 		if (!deletedPost) {
-			throw new NotFoundError(`Post not found`);
+			throw new ServerError({ error });
 		}
 
 		return res.status(200).json({
