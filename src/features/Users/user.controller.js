@@ -50,9 +50,9 @@ export const getUserDetails = async (req, res, next) => {
 		if (!user) {
 			throw new NotFoundError("User not found");
 		}
-		if (!loggedInUser.isAdmin && userId !== req.userId) {
-			throw new UnauthorizedError();
-		}
+		// if (!loggedInUser.isAdmin && userId !== req.userId) {
+		// 	throw new UnauthorizedError();
+		// }
 
 		return res.status(200).json({
 			success: true,
@@ -67,9 +67,9 @@ export const getAllUserDetails = async (req, res, next) => {
 		const loggedInUser = await getUsers(req.userId);
 		const users = await getUsers();
 
-		if (!loggedInUser.isAdmin) {
-			throw new UnauthorizedError();
-		}
+		// if (!loggedInUser.isAdmin) {
+		// 	throw new UnauthorizedError();
+		// }
 
 		return res.status(200).json({
 			success: true,
@@ -163,7 +163,7 @@ export const userSignin = async (req, res, next) => {
 			email: user.email,
 			isAdmin: user.isAdmin,
 		};
-		const validity = { expiresIn: `${process.env.JWT_EXPIRY}h` };
+		const validity = { expiresIn: "1h" };
 		const token = jwt.sign(payload, secretKey, validity);
 
 		res.cookie("jwtToken", token, { httpOnly: true });

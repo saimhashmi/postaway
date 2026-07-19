@@ -66,6 +66,29 @@ const userSchema = new mongoose.Schema({
 			index: true,
 		},
 	],
+	friends: [
+		{
+			user: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+				required: true,
+				index: true,
+			},
+			pending: {
+				type: Boolean,
+				default: true,
+				required: true,
+			},
+		},
+	],
+	friendRequests: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+			index: true,
+		},
+	],
 });
 
 const User = mongoose.model("User", userSchema);
