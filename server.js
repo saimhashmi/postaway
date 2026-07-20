@@ -6,6 +6,7 @@ import "./src/utils/ensureDirectories.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
 
 // Import middlwares
 import logger from "./src/middlewares/logger.middleware.js";
@@ -27,6 +28,7 @@ import commentRouter from "./src/features/Comments/comment.routes.js";
 import likeRouter from "./src/features/Likes/like.routes.js";
 import friendRouter from "./src/features/Friends/friend.routes.js";
 import otpRouter from "./src/features/Otp/otp.routes.js";
+import { swaggerSpec } from "./src/config/swaggerConfig.js";
 
 const server = express();
 const port = 3000;
@@ -52,6 +54,14 @@ server.use("/api/comments", jwtAuth, commentRouter);
 server.use("/api/likes", jwtAuth, likeRouter);
 server.use("/api/friends", jwtAuth, friendRouter);
 server.use("/api/otp", otpRouter);
+server.use(
+	"/api-docs",
+	swaggerUi.serve,
+	swaggerUi.setup(swaggerSpec, {
+		explorer: true,
+		customSiteTitle: "Postaway API Docs",
+	}),
+);
 
 // Middlware to handle 404 requests
 // Needs to be put in the end or other handler(s) will not work
