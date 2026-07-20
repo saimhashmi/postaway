@@ -30,6 +30,12 @@ import friendRouter from "./src/features/Friends/friend.routes.js";
 import otpRouter from "./src/features/Otp/otp.routes.js";
 import { swaggerSpec } from "./src/config/swaggerConfig.js";
 
+// For Dev ENV never to be done in Prod
+if (process.env.NODE_ENV === "development") {
+	const dns = await import("dns");
+	dns.setServers(["1.1.1.1", "8.8.8.8"]); // Forces Cloudflare & Google DNS
+}
+
 const server = express();
 const port = process.env.PORT || 3000;
 
@@ -71,7 +77,7 @@ server.use(invalidRoutesHandler);
 server.use(errorHandler);
 
 server.listen(port, async () => {
-	console.log(`server is line at http://localhost:${port}/`);
+	console.log(`server is live at http://localhost:${port}/`);
 	await connectUsingMongoose();
 });
 

@@ -42,7 +42,6 @@ export const verifyOtp = async (userId, OTP) => {
 
 export const resetPassword = async (userId, newPassword) => {
 	try {
-		console.log(userId);
 		return await User.findByIdAndUpdate(
 			userId,
 			{
