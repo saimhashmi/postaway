@@ -31,7 +31,7 @@ import otpRouter from "./src/features/Otp/otp.routes.js";
 import { swaggerSpec } from "./src/config/swaggerConfig.js";
 
 const server = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // CORS policy configuration
 const corsOptions = {

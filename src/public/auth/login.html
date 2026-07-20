@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login - Postaway</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class="bg-gray-50 min-h-screen flex items-center justify-center px-4">
+		<div class="w-full max-w-md bg-white rounded-xl border border-gray-100 shadow-sm p-8">
+			<h1 class="text-2xl font-bold text-gray-900 mb-2">Welcome back</h1>
+			<p class="text-gray-500 mb-6">Sign in to your Postaway account</p>
+
+			<form id="login-form" class="space-y-4">
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+					<input type="email" name="email" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+				</div>
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+					<input type="password" name="password" required minlength="8" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+				</div>
+				<button type="submit" class="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700">Login</button>
+			</form>
+
+			<div class="mt-6 text-sm text-center space-y-2">
+				<p><a href="/auth/signup.html" class="text-indigo-600 hover:underline">Create an account</a></p>
+				<p><a href="/auth/reset-password.html" class="text-gray-500 hover:text-indigo-600">Forgot password?</a></p>
+			</div>
+		</div>
+
+		<script src="/js/utils.js"></script>
+		<script src="/js/api.js"></script>
+		<script src="/js/auth.js"></script>
+		<script src="/js/ui.js"></script>
+		<script src="/js/router.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				if (Router.redirectIfAuthed()) return;
+
+				document.getElementById("login-form").addEventListener("submit", async (event) => {
+					event.preventDefault();
+					const form = event.target;
+					try {
+						await Auth.login(form.email.value.trim(), form.password.value);
+						UI.toast("Login successful", "success");
+						window.location.href = "/app/feed.html";
+					} catch (error) {
+						UI.toast(error.message, "error");
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

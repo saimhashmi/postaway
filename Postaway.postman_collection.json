@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "9ad78218-5999-4782-a621-b08a116c9781",
-    "name": "Postaway",
+    "_postman_id": "8f77e486-b0a5-4cbe-abe1-a537d8add0d6",
+    "name": "Postaway-2",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "38383107"
   },
@@ -14,6 +14,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Saaim\",\r\n    \"email\": \"saaim1998@gmail.com\",\r\n    \"password\": \"saaim_1998\",\r\n    \"gender\": \"Male\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/users/signup",
               "protocol": "http",
@@ -35,8 +44,17 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"lostfromlight893@gmail.com\",\r\n    \"password\": \"saaim_1998\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "http://localhost:3000/api/user/signin",
+              "raw": "http://localhost:3000/api/users/signin",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -44,7 +62,7 @@
               "port": "3000",
               "path": [
                 "api",
-                "user",
+                "users",
                 "signin"
               ]
             }
@@ -114,7 +132,7 @@
               "variable": [
                 {
                   "key": "userId",
-                  "value": ""
+                  "value": "6a4ab338e43970e63edb55e6"
                 }
               ]
             }
@@ -147,6 +165,15 @@
           "request": {
             "method": "PUT",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Saim\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/users/update-details/:userId",
               "protocol": "http",
@@ -163,7 +190,7 @@
               "variable": [
                 {
                   "key": "userId",
-                  "value": ""
+                  "value": "6a4ab31ae43970e63edb55e5"
                 }
               ]
             }
@@ -216,7 +243,7 @@
               "variable": [
                 {
                   "key": "postId",
-                  "value": ""
+                  "value": "6a576dfc40ddc6c03e10d363"
                 }
               ]
             }
@@ -244,7 +271,7 @@
               "variable": [
                 {
                   "key": "userId",
-                  "value": ""
+                  "value": "6a4ab338e43970e63edb55e6"
                 }
               ]
             }
@@ -256,6 +283,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"caption\": \"Project Hail Mary\",\r\n    \"imageUrl\": \"https://www.imdb.com/title/tt12042730/mediaviewer/rm341827330/?ref_=tt_ov_i\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/posts",
               "protocol": "http",
@@ -291,7 +327,7 @@
               "variable": [
                 {
                   "key": "postId",
-                  "value": ""
+                  "value": "6a57891cb7acee401f47b59a"
                 }
               ]
             }
@@ -303,6 +339,17 @@
           "request": {
             "method": "PUT",
             "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "imageUrl",
+                  "type": "file",
+                  "uuid": "4933c3bb-167a-4519-9240-58c631c89f1c",
+                  "src": "/C:/Users/AzathothJr/Desktop/CodingNinjas/NodeJS/projects/postaway-2/src/public/uploads/default.png"
+                }
+              ]
+            },
             "url": {
               "raw": "http://localhost:3000/api/posts/:postId",
               "protocol": "http",
@@ -318,7 +365,7 @@
               "variable": [
                 {
                   "key": "postId",
-                  "value": ""
+                  "value": "6a56e51d8df11956c9d1751d"
                 }
               ]
             }
@@ -350,7 +397,7 @@
               "variable": [
                 {
                   "key": "postId",
-                  "value": ""
+                  "value": "6a578836b7acee401f47b596"
                 }
               ]
             }
@@ -362,6 +409,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\": \"Awesome movie 10/10\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/comments/:postId",
               "protocol": "http",
@@ -377,7 +433,7 @@
               "variable": [
                 {
                   "key": "postId",
-                  "value": ""
+                  "value": "6a578836b7acee401f47b596"
                 }
               ]
             }
@@ -404,7 +460,7 @@
               "variable": [
                 {
                   "key": "commentId",
-                  "value": ""
+                  "value": "6a578853b7acee401f47b597"
                 }
               ]
             }
@@ -416,6 +472,15 @@
           "request": {
             "method": "PUT",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\": \"Awesome Movie\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/comments/:commentId",
               "protocol": "http",
@@ -431,7 +496,7 @@
               "variable": [
                 {
                   "key": "commentId",
-                  "value": ""
+                  "value": "6a576f5f9a91540d06ea8d48"
                 }
               ]
             }
@@ -449,7 +514,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/likes/:id",
+              "raw": "http://localhost:3000/api/likes/:id?type=Post",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -460,10 +525,16 @@
                 "likes",
                 ":id"
               ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "Post"
+                }
+              ],
               "variable": [
                 {
                   "key": "id",
-                  "value": ""
+                  "value": "6a57891cb7acee401f47b59a"
                 }
               ]
             }
@@ -475,8 +546,17 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "http://localhost:3000/api/likes/toggle/:id",
+              "raw": "http://localhost:3000/api/likes/toggle/:id?type=Comment",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -488,10 +568,16 @@
                 "toggle",
                 ":id"
               ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "Comment"
+                }
+              ],
               "variable": [
                 {
                   "key": "id",
-                  "value": ""
+                  "value": "6a578853b7acee401f47b597"
                 }
               ]
             }
@@ -573,7 +659,7 @@
               "variable": [
                 {
                   "key": "friendId",
-                  "value": ""
+                  "value": "6a4ab31ae43970e63edb55e5"
                 }
               ]
             }
@@ -585,6 +671,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"accept\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/friends/response-to-request/:friendId",
               "protocol": "http",
@@ -601,7 +696,7 @@
               "variable": [
                 {
                   "key": "friendId",
-                  "value": ""
+                  "value": "6a4ab31ae43970e63edb55e5"
                 }
               ]
             }
@@ -618,6 +713,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"mdsaaim25@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/otp/send",
               "protocol": "http",
@@ -639,6 +743,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"mdsaaim25@gmail.com\",\r\n    \"otp\": \"377481\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/otp/verify",
               "protocol": "http",
@@ -660,6 +773,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"mdsaaim25@gmail.com\",\r\n    \"password\": \"saaim_1998\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://localhost:3000/api/otp/reset-password",
               "protocol": "http",
