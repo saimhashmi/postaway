@@ -1,6 +1,5 @@
 import Like from "./like.schema.js";
 import { ServerError } from "../../utils/errors.js";
-import { populate } from "dotenv";
 import User from "../Users/user.schema.js";
 import Post from "../Posts/post.schema.js";
 import Comment from "../Comments/comment.schema.js";

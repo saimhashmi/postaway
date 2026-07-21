@@ -1,9 +1,6 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { UnauthorizedError } from "../utils/errors.js";
 import { isTokenValid } from "../features/Users/loginToken.repository.js";
-
-dotenv.config();
 
 export const verifyJWT = (token) => {
 	try {

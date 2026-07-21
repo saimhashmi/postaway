@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import { ServerApiVersion } from "mongodb";
-import dotenv from "dotenv";
 import { ServerError } from "../utils/errors.js";
-dotenv.config();
 
 const url = process.env.MONGODB || "mongodb://0.0.0.0:27017/Postaway";
 

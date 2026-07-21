@@ -1,8 +1,6 @@
 // user.controller.js
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
 import {
 	getUsers,
 	findUserByEmail,
@@ -23,6 +21,10 @@ import {
 	deleteLoginToken,
 } from "./loginToken.repository.js";
 import { verifyJWT } from "../../middlewares/jwtAuth.middleware.js";
+import getNetworkAddress from "../../utils/networkDetails.js";
+
+const networkIP = getNetworkAddress();
+const URL = `http://${networkIP}:${process.env.PORT}`;
 
 const sendVerificationToken = async (newUser) => {
 	// Generate Verification JWT (Expires in 5 minutes)
@@ -31,7 +33,7 @@ const sendVerificationToken = async (newUser) => {
 		process.env.JWT_SECRET,
 		{ expiresIn: "5m" },
 	);
-	const verificationUrl = `http://localhost:3000/api/users/verify-email?token=${verificationToken}`;
+	const verificationUrl = `${URL}/api/users/verify-email?token=${verificationToken}`;
 	const sentMail = await sendEmail(
 		newUser.email,
 		verificationEmail(newUser.name, verificationUrl),
@@ -45,7 +47,6 @@ export const getUserDetails = async (req, res, next) => {
 		const userId = req.params.userId;
 		const loggedInUser = await getUsers(req.userId);
 		const user = await getUsers(userId);
-		console.log(loggedInUser, user);
 
 		if (!user) {
 			throw new NotFoundError("User not found");

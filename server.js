@@ -2,6 +2,8 @@
 // any other module (logger, multer) tries to write into them.
 import "./src/utils/ensureDirectories.js";
 
+import "dotenv/config";
+
 // Import packages
 import express from "express";
 import cors from "cors";
@@ -20,6 +22,7 @@ import {
 	closeMongoDBConnection,
 	connectUsingMongoose,
 } from "./src/config/mongooseConfig.js";
+import getNetworkAddress from "./src/utils/networkDetails.js";
 
 // Import routes
 import userRouter from "./src/features/Users/user.routes.js";
@@ -37,7 +40,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const server = express();
-const port = process.env.PORT || 3000;
+const networkIP = getNetworkAddress();
+const PORT = process.env.PORT || 3000;
 
 // CORS policy configuration
 const corsOptions = {
@@ -76,8 +80,10 @@ server.use(invalidRoutesHandler);
 // --- Error middleware MUST be registered last, after all routes ---
 server.use(errorHandler);
 
-server.listen(port, async () => {
-	console.log(`server is live at http://localhost:${port}/`);
+// Crucial: Pass '0.0.0.0' to listen on your local network, not just localhost
+server.listen(PORT, "0.0.0.0", async () => {
+	console.log(`  Local:            http://localhost:${PORT}`);
+	console.log(`  On Your Network:  http://${networkIP}:${PORT}`);
 	await connectUsingMongoose();
 });
 

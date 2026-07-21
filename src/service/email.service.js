@@ -1,9 +1,7 @@
 // Import the necessary modules here
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
 import { EmailDeliveryError } from "../utils/errors.js";
 import { text } from "express";
-dotenv.config();
 
 // SMTP Server Configuration
 const smtpConfig = {
